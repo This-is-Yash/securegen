@@ -1,6 +1,8 @@
 <div align="center">
 
-<img src="docs/assets/icon.png" width="88" height="88" alt="SecureGen icon" />
+<!-- <img src="docs/assets/icon.png" width="88" height="88" alt="SecureGen icon" /> -->
+<img width="128" height="76" alt="Screenshot 2026-08-29 182356 (1)" src="https://github.com/user-attachments/assets/1443ac50-0850-4b28-a6f4-9ade1329a120" />
+
 
 # 🛡️ SecureGen
 
