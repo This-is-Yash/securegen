@@ -1,0 +1,185 @@
+{
+  "name": "securegen",
+  "displayName": "SecureGen",
+  "description": "AI-assisted secure coding: scan vulnerabilities, explain findings, generate fixes and security tests, and verify remediation.",
+  "version": "1.0.1",
+  "publisher": "YashPathak1425",
+  "author": {
+    "name": "Secure Coding Research Team"
+  },
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Linters",
+    "Programming Languages",
+    "Other"
+  ],
+  "keywords": [
+    "security",
+    "secure-coding",
+    "vulnerability",
+    "semgrep",
+    "cwe",
+    "owasp",
+    "ai",
+    "remediation",
+    "code-review"
+  ],
+  "main": "./out/extension.js",
+  "activationEvents": [
+    "onStartupFinished",
+    "onLanguage:python",
+    "onLanguage:javascript",
+    "onLanguage:typescript",
+    "onCommand:secureScan.scanFile",
+    "onCommand:secureScan.analyzeSelection",
+    "onCommand:secureScan.analyzeWorkspace",
+    "onCommand:secureScan.clearDiagnostics",
+    "onCommand:secureScan.explainVulnerability",
+    "onCommand:secureScan.remediateVulnerability",
+    "onCommand:secureScan.generateCode",
+    "onCommand:secureScan.generateTests",
+    "onCommand:secureScan.runTests",
+    "onCommand:secureScan.verifySecurity"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "secureScan.openDashboard",
+        "title": "SecureGen: Open Security Dashboard",
+        "category": "SecureGen"
+      },
+      {
+        "command": "secureScan.analyzeWorkspace",
+        "title": "SecureGen: Analyze Workspace"
+      },
+      {
+        "command": "secureScan.scanFile",
+        "title": "SecureGen: Scan Current File"
+      },
+      {
+        "command": "secureScan.analyzeSelection",
+        "title": "SecureGen: Analyze Selected Code"
+      },
+      {
+        "command": "secureScan.generateTests",
+        "title": "SecureGen: Generate Security Tests"
+      },
+      {
+        "command": "secureScan.runTests",
+        "title": "SecureGen: Run Security Tests"
+      },
+      {
+        "command": "secureScan.verifySecurity",
+        "title": "SecureGen: Verify Security"
+      },
+      {
+        "command": "secureScan.explainVulnerability",
+        "title": "SecureGen: Explain Vulnerability with AI"
+      },
+      {
+        "command": "secureScan.remediateVulnerability",
+        "title": "SecureGen: Remediate Vulnerability with AI"
+      },
+      {
+        "command": "secureScan.generateCode",
+        "title": "SecureGen: Generate Secure Code with AI"
+      },
+      {
+        "command": "secureScan.clearDiagnostics",
+        "title": "SecureGen: Clear All Diagnostics"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "secureScan.generateCode",
+          "group": "SecureScan@1"
+        },
+        {
+          "command": "secureScan.remediateVulnerability",
+          "group": "SecureScan@2",
+          "when": "editorTextFocus"
+        },
+        {
+          "command": "secureScan.generateTests",
+          "group": "SecureScan@3",
+          "when": "editorTextFocus"
+        },
+        {
+          "command": "secureScan.explainVulnerability",
+          "group": "SecureScan@4",
+          "when": "editorTextFocus"
+        },
+        {
+          "command": "secureScan.analyzeSelection",
+          "group": "SecureScan@5",
+          "when": "editorHasSelection"
+        },
+        {
+          "command": "secureScan.scanFile",
+          "group": "SecureScan@6"
+        },
+        {
+          "command": "secureScan.analyzeWorkspace",
+          "group": "SecureScan@7"
+        }
+      ],
+      "editor/title": [
+        {
+          "command": "secureScan.openDashboard",
+          "group": "navigation@1",
+          "when": "editorTextFocus"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "secureScan.openDashboard"
+        }
+      ]
+    },
+    "configuration": {
+      "type": "object",
+      "title": "SecureGen",
+      "properties": {
+        "secureScan.backendUrl": {
+          "type": "string",
+          "default": "http://127.0.0.1:8000",
+          "description": "URL of the Secure Coding Assistant FastAPI backend"
+        },
+        "secureScan.enableRealTimeScanning": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable scanning automatically on file save"
+        },
+        "secureScan.autoStartBackend": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically start the bundled SecureGen backend when VS Code opens."
+        },
+        "secureScan.pythonPath": {
+          "type": "string",
+          "default": "",
+          "description": "Optional Python executable used to bootstrap the local SecureGen backend. Leave empty for automatic detection."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js",
+    "package": "vsce package"
+  },
+  "devDependencies": {
+    "@types/node": "^20.x",
+    "@types/vscode": "^1.85.0",
+    "@vscode/vsce": "^2.24.0",
+    "typescript": "^5.3.3"
+  },
+  "icon": "icon.png"
+}

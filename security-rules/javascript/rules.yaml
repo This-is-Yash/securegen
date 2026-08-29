@@ -1,0 +1,109 @@
+rules:
+  - id: js-sql-injection-concatenated-query
+    languages: [javascript, typescript]
+    severity: ERROR
+    message: "Potential SQL Injection (CWE-89): SQL query built via string concatenation or template literal without parameterized values."
+    metadata:
+      cwe: "CWE-89"
+      owasp: "A03:2021 - Injection"
+      category: security
+      subcategory: sql-injection
+      confidence: HIGH
+      impact: HIGH
+    pattern-either:
+      - pattern: $DB.query($SQL + $INPUT, ...)
+      - pattern: $POOL.query($SQL + $INPUT, ...)
+      - pattern: $CLIENT.query($SQL + $INPUT, ...)
+      - pattern: |
+          $Q = $SQL + $INPUT;
+          ...
+          $DB.query($Q, ...);
+
+  - id: js-command-injection-child-process
+    languages: [javascript, typescript]
+    severity: ERROR
+    message: "Potential Command Injection (CWE-78): Unsafe child_process execution with dynamic input."
+    metadata:
+      cwe: "CWE-78"
+      owasp: "A03:2021 - Injection"
+      category: security
+      subcategory: command-injection
+      confidence: HIGH
+      impact: HIGH
+    pattern-either:
+      - pattern: exec($X + $Y, ...)
+      - pattern: child_process.exec($X + $Y, ...)
+      - pattern: execSync($X + $Y, ...)
+      - pattern: child_process.execSync($X + $Y, ...)
+
+  - id: js-hardcoded-secret-key
+    languages: [javascript, typescript]
+    severity: ERROR
+    message: "Hardcoded Secret (CWE-798): Hardcoded API key, token, or password detected in source code."
+    metadata:
+      cwe: "CWE-798"
+      owasp: "A07:2021 - Identification and Authentication Failures"
+      category: security
+      subcategory: hardcoded-secret
+      confidence: HIGH
+      impact: HIGH
+    patterns:
+      - pattern-either:
+          - pattern: const $KEY = $VAL;
+          - pattern: let $KEY = $VAL;
+          - pattern: var $KEY = $VAL;
+      - metavariable-regex:
+          metavariable: $KEY
+          regex: "(?i)(apiKey|secretKey|authToken|jwtSecret|privateKey|password)"
+      - pattern-regex: "['\"][A-Za-z0-9_\\-]{20,}['\"]"
+
+  - id: js-dangerous-eval
+    languages: [javascript, typescript]
+    severity: ERROR
+    message: "Dangerous Code Execution (CWE-95): Dynamic code execution using eval() or new Function()."
+    metadata:
+      cwe: "CWE-95"
+      owasp: "A03:2021 - Injection"
+      category: security
+      subcategory: eval-injection
+      confidence: HIGH
+      impact: HIGH
+    pattern-either:
+      - pattern: eval(...)
+      - pattern: new Function(...)
+
+  - id: js-path-traversal-fs
+    languages: [javascript, typescript]
+    severity: ERROR
+    message: "Potential Path Traversal (CWE-22): Unvalidated dynamic file path constructed via concatenation passed to file system operation."
+    metadata:
+      cwe: "CWE-22"
+      owasp: "A01:2021 - Broken Access Control"
+      category: security
+      subcategory: path-traversal
+      confidence: HIGH
+      impact: HIGH
+    pattern-either:
+      - pattern: fs.readFile($BASE + $INPUT, ...)
+      - pattern: fs.readFileSync($BASE + $INPUT, ...)
+      - pattern: fs.createReadStream($BASE + $INPUT, ...)
+      - pattern: fs.writeFile($BASE + $INPUT, ...)
+      - pattern: res.sendFile($BASE + $INPUT, ...)
+      - pattern: res.download($BASE + $INPUT, ...)
+
+  - id: js-dom-xss-inner-html
+    languages: [javascript, typescript]
+    severity: ERROR
+    message: "Cross-Site Scripting / XSS (CWE-79): Direct assignment of untrusted content to innerHTML, outerHTML, or document.write."
+    metadata:
+      cwe: "CWE-79"
+      owasp: "A03:2021 - Injection"
+      category: security
+      subcategory: cross-site-scripting
+      confidence: HIGH
+      impact: HIGH
+    pattern-either:
+      - pattern: $EL.innerHTML = $INPUT;
+      - pattern: $EL.outerHTML = $INPUT;
+      - pattern: document.write($INPUT);
+      - pattern: document.writeln($INPUT);

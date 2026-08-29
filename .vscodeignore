@@ -1,0 +1,20 @@
+# Development dependencies and source
+node_modules/**
+src/**
+.vscode-test/**
+test/**
+**/*.map
+
+# Python development environment
+backend/venv/**
+backend/**/__pycache__/**
+backend/.tmp/**
+**/*.pyc
+
+# Repository/dev files
+package-lock.json
+package.json.backup
+package.json.old
+*.log
+.env
+.env.*

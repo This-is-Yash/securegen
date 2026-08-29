@@ -1,0 +1,104 @@
+rules:
+  - id: python-sql-injection-formatted-query
+    languages: [python]
+    severity: ERROR
+    message: "Potential SQL Injection (CWE-89): Query constructed using dynamic string formatting or interpolation without parameterization."
+    metadata:
+      cwe: "CWE-89"
+      owasp: "A03:2021 - Injection"
+      category: security
+      subcategory: sql-injection
+      confidence: HIGH
+      impact: HIGH
+    pattern-either:
+      - pattern: $CURSOR.execute(f"...", ...)
+      - pattern: $CURSOR.execute($QUERY % (...), ...)
+      - pattern: $CURSOR.execute($QUERY.format(...), ...)
+      - pattern: $SESSION.execute(text(f"..."), ...)
+      - pattern: $ENGINE.execute(f"...", ...)
+      - pattern: |
+          $Q = f"..."
+          ...
+          $CURSOR.execute($Q, ...)
+      - pattern: |
+          $Q = "..." % (...)
+          ...
+          $CURSOR.execute($Q, ...)
+      - pattern: |
+          $Q = "...".format(...)
+          ...
+          $CURSOR.execute($Q, ...)
+
+  - id: python-command-injection-os-system
+    languages: [python]
+    severity: ERROR
+    message: "Potential Command Injection (CWE-78): Unsafe execution of system commands with dynamic input."
+    metadata:
+      cwe: "CWE-78"
+      owasp: "A03:2021 - Injection"
+      category: security
+      subcategory: command-injection
+      confidence: HIGH
+      impact: HIGH
+    pattern-either:
+      - pattern: os.system(f"...")
+      - pattern: os.system($X + $Y)
+      - pattern: os.system($CMD % (...))
+      - pattern: os.system($CMD.format(...))
+      - pattern: os.popen(f"...")
+      - pattern: os.popen($X + $Y)
+      - pattern: subprocess.Popen(..., shell=True, ...)
+      - pattern: subprocess.call(..., shell=True, ...)
+      - pattern: subprocess.run(..., shell=True, ...)
+
+  - id: python-hardcoded-secret-key
+    languages: [python]
+    severity: ERROR
+    message: "Hardcoded Secret (CWE-798): Hardcoded API key, token, or password detected in source code."
+    metadata:
+      cwe: "CWE-798"
+      owasp: "A07:2021 - Identification and Authentication Failures"
+      category: security
+      subcategory: hardcoded-secret
+      confidence: HIGH
+      impact: HIGH
+    patterns:
+      - pattern: $KEY = "..."
+      - metavariable-regex:
+          metavariable: $KEY
+          regex: "(?i)(api_key|apikey|secret_key|secretkey|auth_token|authtoken|jwt_secret|private_key|aws_secret_access_key|password)"
+
+  - id: python-dangerous-eval
+    languages: [python]
+    severity: WARNING
+    message: "Dangerous Code Execution (CWE-95): Dynamic code execution via eval/exec can lead to arbitrary code execution."
+    metadata:
+      cwe: "CWE-95"
+      owasp: "A03:2021 - Injection"
+      category: security
+      subcategory: eval-injection
+      confidence: MEDIUM
+      impact: HIGH
+    pattern-either:
+      - pattern: eval(...)
+      - pattern: exec(...)
+
+  - id: python-path-traversal-open
+    languages: [python]
+    severity: ERROR
+    message: "Potential Path Traversal (CWE-22): File path constructed using dynamic input without path canonicalization."
+    metadata:
+      cwe: "CWE-22"
+      owasp: "A01:2021 - Broken Access Control"
+      category: security
+      subcategory: path-traversal
+      confidence: HIGH
+      impact: HIGH
+    patterns:
+      - pattern-either:
+          - pattern: open(f"...", ...)
+          - pattern: open($BASE + $INPUT, ...)
+          - pattern: open(os.path.join($BASE, $INPUT), ...)
+          - pattern: send_file(f"...", ...)
+          - pattern: send_file($BASE + $INPUT, ...)
+      - pattern-not: open("...", ...)
